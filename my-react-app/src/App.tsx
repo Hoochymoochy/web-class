@@ -1,34 +1,123 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react'
+import Header from './Components/Header'
+import TaskList from './Components/TaskList'
+
+export type Task = {
+  id: number
+  title: string
+  description: string
+  priority: number
+  dueDate: string
+  completed: boolean
+}
+
+const currentTasks: Task[] = [
+  {
+    id: 1,
+    title: 'Task 1',
+    description: 'Description 1',
+    priority: 1,
+    dueDate: '2023-01-01',
+    completed: false,
+  },
+  {
+    id: 2,
+    title: 'Task 2',
+    description: 'Description 1',
+    priority: 2,
+    dueDate: '2023-01-01',
+    completed: false,
+  },
+  {
+    id: 3,
+    title: 'Task 3',
+    description: 'Description 1',
+    priority: 3,
+    dueDate: '2023-01-01',
+    completed: false,
+  },
+  {
+    id: 4,
+    title: 'Task 4',
+    description: 'Description 1',
+    priority: 3,
+    dueDate: '2023-01-01',
+    completed: false,
+  },
+  {
+    id: 5,
+    title: 'Task 5',
+    description: 'Description 1',
+    priority: 3,
+    dueDate: '2023-01-01',
+    completed: false,
+  },
+]
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [tasks, setTasks] = useState<Task[]>([])
+
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [priority, setPriority] = useState<number | ''>('')
+  const [dueDate, setDueDate] = useState('')
+
+  useEffect(() => {
+    setTasks(currentTasks)
+  }, [])
+
+  const handleAddTask = () => {
+    if (!title || !description || priority === '' || !dueDate) return
+
+    const newTask: Task = {
+      id: tasks.length + 1,
+      title,
+      description,
+      priority,
+      dueDate,
+      completed: false,
+    }
+
+    setTasks(prev => [...prev, newTask])
+
+    setTitle('')
+    setDescription('')
+    setPriority('')
+    setDueDate('')
+  }
+
+  const handleCompleteTask = (id: number) => {
+    setTasks(prev =>
+      prev.map(task =>
+        task.id === id
+          ? { ...task, completed: !task.completed }
+          : task
+      )
+    )
+  }
+
+  const handleDeleteTask = (id: number) => {
+    setTasks(prev => prev.filter(task => task.id !== id))
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <Header />
+
+      <form onSubmit={e => e.preventDefault()}>
+        <input type="text" placeholder="Title" value={title} onChange={e => setTitle(e.target.value)}/>
+        <input type="text" placeholder="Description" value={description} onChange={e => setDescription(e.target.value)}/>
+        <input type="number" placeholder="Priority" value={priority} onChange={e => setPriority(Number(e.target.value))} />
+        <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)}/>
+        <button type="button" onClick={handleAddTask}>Add Task</button>
+      </form>
+
+      <TaskList
+        tasks={tasks}
+        onDelete={handleDeleteTask}
+        handleCompleteTask={handleCompleteTask}
+      />
+    </div>
   )
 }
 

@@ -1,7 +1,11 @@
 
 function Header() {
     return <header>
-        <nav className="navbar"></nav>
+        <nav className="nav">
+            <ul>
+                <li><a href="/">Home</a></li>
+            </ul>
+        </nav>
 
 
     </header>;
