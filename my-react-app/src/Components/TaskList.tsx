@@ -1,17 +1,17 @@
 import React from "react";
-import { Task } from "../App";
-
+import TaskCard from "./TaskCard";
 type TaskListProps = {
     tasks: Task[];
+    onDelete: (id: number) => void;
 };
 
-const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
-    return (
-        <ul>
+const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete }) => {
+  return (
+        <div>
             {tasks.map((task) => (
-                <li key={task.id}>{task.title}</li>
+                <TaskCard task={task} onDelete={onDelete} />
             ))}
-        </ul>
-    );
+        </div>
+  );
 };
 export default TaskList;

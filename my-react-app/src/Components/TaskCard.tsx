@@ -1,5 +1,5 @@
 import React from "react";
-import { Task } from "../App";
+import type { Task } from "../App";
 
 type TaskCardProps = {
     task: Task
@@ -29,7 +29,7 @@ const styles = {
     borderRadius: "8px",
     padding: "12px",
     marginBottom: "10px",
-    backgroundColor: "#fff",
+    backgroundColor: "",
   },
   title: {
     margin: 0,

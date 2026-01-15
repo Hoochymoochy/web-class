@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import Header from './Components/Header'
+import TaskList from './Components/TaskList'
 
 type Task = {
   id: number
@@ -87,6 +89,7 @@ function App() {
 
   return (
     <div className="bg-black text-white p-4">
+      <Header />
 
       <form className="flex flex-col gap-2">
         <input type="text" placeholder="Title" onInput={(e) => setTitle(e.target.value)}/>
@@ -97,15 +100,7 @@ function App() {
 
       </form>
 
-      {tasks.map((task) => (
-        <div key={task.id}>
-          <h2>{task.title}</h2>
-          <p>{task.description}</p>
-          <p>{task.priority}</p>
-          <p>{task.dueDate}</p>
-          <button onClick={() => handleDeleteTask(task.id)}>Delete Task</button>
-        </div>
-      ))}
+      <TaskList tasks={tasks} onDelete={handleDeleteTask}/>
 
     </div>
   )
