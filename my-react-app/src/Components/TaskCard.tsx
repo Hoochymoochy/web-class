@@ -1,13 +1,13 @@
-import React from "react";
 import type { Task } from "../App";
 
 type TaskCardProps = {
     task: Task
     onDelete: (id: number) => void
+    onComplete: (id: number) => void
 };
 
 
-export default function TaskCard({ task, onDelete }: TaskCardProps) {
+export default function TaskCard({ task, onDelete, onComplete }: TaskCardProps) {
   return (
     <div style={styles.card}>
       <h3 style={styles.title}>{task.title}</h3>
@@ -17,8 +17,11 @@ export default function TaskCard({ task, onDelete }: TaskCardProps) {
       <p>
         Status:{" "}
         <strong>{task.completed ? "Completed" : "Not completed"}</strong>
+        <input type="checkbox" name="completed" checked={task.completed} onChange={() => onComplete(task.id)}/>
       </p>
       <button onClick={() => onDelete(task.id)}>Delete</button>
+      <form>
+      </form>
     </div>
   );
 };
