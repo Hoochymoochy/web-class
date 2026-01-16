@@ -101,7 +101,7 @@ function App() {
   }
 
   return (
-    <div>
+    <div className='flex justify-center flex-col items-center p-4'>
       <Header />
 
       <form onSubmit={e => e.preventDefault()}>
