@@ -9,12 +9,22 @@ type TaskCardProps = {
 
 export default function TaskCard({ task, onDelete, onComplete }: TaskCardProps) {
   return (
-    <div style={styles.card}>
-      <h3 style={styles.title}>{task.title}</h3>
-      <h3 >{task.description}</h3>
-      <h3 >{task.priority}</h3>
+    <div className="border p-4 space-y-3">
+      <div className="flex flex-row justify-between">
+      <h3 className="text-2xl font-bold">{task.title}</h3>
+        {
+          task.priority === 1 && <h3 className="bg-red-500 rounded-full p-2"></h3>
+        }
+        {
+          task.priority === 2 && <h3 className="bg-yellow-500 rounded-full p-2"></h3>
+        }
+        {
+          task.priority === 3 && <h3 className="bg-green-500 rounded-full p-2"></h3>
+        }
+      </div>
+      <h3 className="bg-white/10 rounded-md p-2">{task.description}</h3>
       <h3 >{task.dueDate}</h3>
-      <p>
+      <p className="space-x-2">
         Status:{" "}
         <strong>{task.completed ? "Completed" : "Not completed"}</strong>
         <input type="checkbox" name="completed" checked={task.completed} onChange={() => onComplete(task.id)}/>
@@ -24,17 +34,4 @@ export default function TaskCard({ task, onDelete, onComplete }: TaskCardProps) 
       </form>
     </div>
   );
-};
-
-const styles = {
-  card: {
-    border: "1px solid #ccc",
-    borderRadius: "8px",
-    padding: "12px",
-    marginBottom: "10px",
-    backgroundColor: "",
-  },
-  title: {
-    margin: 0,
-  },
 };
