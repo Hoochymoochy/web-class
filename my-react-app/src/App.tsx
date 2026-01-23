@@ -11,60 +11,28 @@ export type Task = {
   completed: boolean
 }
 
-const currentTasks: Task[] = [
-  {
-    id: 1,
-    title: 'Task 1',
-    description: 'Description 1',
-    priority: 1,
-    dueDate: '2023-01-01',
-    completed: false,
-  },
-  {
-    id: 2,
-    title: 'Task 2',
-    description: 'Description 1',
-    priority: 2,
-    dueDate: '2023-01-01',
-    completed: false,
-  },
-  {
-    id: 3,
-    title: 'Task 3',
-    description: 'Description 1',
-    priority: 3,
-    dueDate: '2023-01-01',
-    completed: false,
-  },
-  {
-    id: 4,
-    title: 'Task 4',
-    description: 'Description 1',
-    priority: 3,
-    dueDate: '2023-01-01',
-    completed: false,
-  },
-  {
-    id: 5,
-    title: 'Task 5',
-    description: 'Description 1',
-    priority: 3,
-    dueDate: '2023-01-01',
-    completed: false,
-  },
-]
-
 function App() {
-  const [tasks, setTasks] = useState<Task[]>(() => {
-    const stored = localStorage.getItem('tasks')
-    return stored ? JSON.parse(stored) : []
-  })
+  const [tasks, setTasks] = useState<Task[]>([])
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('tasks')
+      if (stored) {
+        setTasks(JSON.parse(stored))
+      }
+    } catch (err) {
+      console.error('Failed to parse tasks from localStorage', err)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+  
   
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [priority, setPriority] = useState<number | ''>('')
   const [dueDate, setDueDate] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const handleAddTask = () => {
     if (!title || !description || priority === '' || !dueDate) return
@@ -108,7 +76,6 @@ function App() {
     <div className='flex justify-center flex-col items-center p-4'>
       <Header />
 
-      {loading && <p>Loading...</p>}
 
       <form onSubmit={e => e.preventDefault()}>
         <input type="text" placeholder="Title" value={title} onChange={e => setTitle(e.target.value)}/>
@@ -123,6 +90,8 @@ function App() {
         onDelete={handleDeleteTask}
         handleCompleteTask={handleCompleteTask}
       />
+            {loading && <p>Loading...</p>}
+
     </div>
   )
 }
