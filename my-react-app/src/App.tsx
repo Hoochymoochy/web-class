@@ -12,21 +12,14 @@ export type Task = {
 }
 
 function App() {
-  const [tasks, setTasks] = useState<Task[]>([])
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const savedTasks = localStorage.getItem('tasks')
+    return savedTasks ? JSON.parse(savedTasks) : []
+  })
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('tasks')
-      if (stored) {
-        setTasks(JSON.parse(stored))
-      }
-    } catch (err) {
-      console.error('Failed to parse tasks from localStorage', err)
-    } finally {
-      setLoading(false)
-    }
+    setLoading(false)
   }, [])
-  
   
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
