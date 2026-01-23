@@ -55,16 +55,16 @@ const currentTasks: Task[] = [
 ]
 
 function App() {
-  const [tasks, setTasks] = useState<Task[]>([])
-
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const stored = localStorage.getItem('tasks')
+    return stored ? JSON.parse(stored) : []
+  })
+  
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [priority, setPriority] = useState<number | ''>('')
   const [dueDate, setDueDate] = useState('')
-
-  useEffect(() => {
-    setTasks(currentTasks)
-  }, [])
+  const [loading, setLoading] = useState(false)
 
   const handleAddTask = () => {
     if (!title || !description || priority === '' || !dueDate) return
@@ -86,6 +86,10 @@ function App() {
     setDueDate('')
   }
 
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks))
+  }, [tasks])
+
   const handleCompleteTask = (id: number) => {
     setTasks(prev =>
       prev.map(task =>
@@ -103,6 +107,8 @@ function App() {
   return (
     <div className='flex justify-center flex-col items-center p-4'>
       <Header />
+
+      {loading && <p>Loading...</p>}
 
       <form onSubmit={e => e.preventDefault()}>
         <input type="text" placeholder="Title" value={title} onChange={e => setTitle(e.target.value)}/>
