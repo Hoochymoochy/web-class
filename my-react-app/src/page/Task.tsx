@@ -1,31 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import type { Task } from "../Type";
 
 
 function Task() {
   const { id } = useParams();
-  const [task, setTask] = useState<TaskType | null>(null);
+  const [task, setTask] = useState<Task | null>(null);
 
   useEffect(() => {
-    if (!id) return;
+    const task = JSON.parse(localStorage.getItem("tasks") || "[]").find((task: Task) => task.id === Number(id));
+    setTask(task);
 
-    const tasks: TaskType[] = JSON.parse(
-      localStorage.getItem("tasks") || "[]"
-    );
-
-    console.log(id)
-
-
-
-
-    const foundTask = tasks.find(task => task.id === id);
-    console.log(foundTask)
-    setTask(foundTask || null);
   }, [id]);
 
   return (
     <div>
       <h2>{task?.title ?? "Task not found"}</h2>
+      <h2>{task?.description ?? "Task not found"}</h2>
+      <h2>{task?.dueDate ?? "Task not found"}</h2>
+      <h2>{task?.priority ?? "Task not found"}</h2>
     </div>
   );
 }

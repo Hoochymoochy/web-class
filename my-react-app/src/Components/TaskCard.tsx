@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import type { Task } from "../App";
+import type { Task } from "../Type";
 
 type TaskCardProps = {
     task: Task

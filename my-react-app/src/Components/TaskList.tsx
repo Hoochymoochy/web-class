@@ -1,6 +1,6 @@
 import React from "react";
 import TaskCard from "./TaskCard";
-import type { Task } from "../App";
+import type { Task } from "../Type";
 type TaskListProps = {
     tasks: Task[];
     onDelete: (id: number) => void;

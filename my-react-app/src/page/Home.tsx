@@ -1,15 +1,7 @@
 import { useEffect, useState } from 'react'
 import Header from '../Components/Header'
 import TaskList from '../Components/TaskList'
-
-export type Task = {
-  id: number
-  title: string
-  description: string
-  priority: number
-  dueDate: string
-  completed: boolean
-}
+import type { Task } from '../Type'
 
 function Home() {
   const [tasks, setTasks] = useState<Task[]>(() => {
