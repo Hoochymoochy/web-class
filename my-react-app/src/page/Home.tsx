@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import Header from '../Components/Header'
 import TaskList from '../Components/TaskList'
 import type { Task } from '../Type'
 
@@ -59,8 +58,6 @@ function Home() {
 
   return (
     <div className='flex justify-center flex-col items-center p-4'>
-      <Header />
-
 
       <form onSubmit={e => e.preventDefault()}>
         <input type="text" placeholder="Title" value={title} onChange={e => setTitle(e.target.value)}/>
