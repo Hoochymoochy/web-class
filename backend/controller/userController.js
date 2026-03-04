@@ -1,9 +1,7 @@
-let users = [
-    { id: 1, name: "John Doe" },
-    { id: 2, name: "Jane Doe" },
-];
+import { addUser  } from './prismaController.js';
 
-const getAllUsers = (req, res) => {
+const getAllUsers = async (req, res) => {
+    const users = await addTask();
     res.status(200).json(users);
 };
 
@@ -13,9 +11,9 @@ const getUserById = (req, res) => {
     res.status(200).json(user);
 };
 
-const createUser = (req, res) => {
-    const user = { id: users.length + 1, name: req.body.name };
-    users.push(user);
+const createUser = async (req, res) => {
+    const { email, password, name } = req.body;
+    const user = await addUser(email, password, name);
     res.status(201).json(user);
 };
 
@@ -33,4 +31,4 @@ const deleteUser = (req, res) => {
     res.sendStatus(204);
 };
 
-module.exports = { getAllUsers, getUserById, createUser, updateUser, deleteUser };
+export { getAllUsers, getUserById, createUser, updateUser, deleteUser };

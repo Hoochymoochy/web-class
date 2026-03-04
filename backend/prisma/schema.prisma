@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Role {
+  BASIC
+  TEAMADMIN
+  SUPERADMIN
+}
+
+model User {
+  id    String   @id @default(uuid())
+  email String   @unique
+  password  String
+  name  String
+  createdAt DateTime @default(now())
+
+  role Role @default(BASIC)
+
+  createdTasks Task[]
+  
+  assignedTasks TaskAssignment[]
+  
+  memberships TeamMember[]
+}
+
+model Team {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+
+  members TeamMember[]
+  tasks   Task[]
+}
+
+model TeamMember {
+  id     String @id @default(uuid())
+  userId String
+  teamId String
+  role   Role   @default(BASIC)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, teamId])
+  @@index([teamId])
+}
+
+model Task {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  priority    TaskPriority @default(MEDIUM)
+  dueDate     DateTime?
+  status      TaskStatus   @default(TODO)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  teamId String
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  createdByUserId String
+  createdBy       User   @relation(fields: [createdByUserId], references: [id], onDelete: Cascade)
+
+  assignments TaskAssignment[]
+  comments    Comment[]
+
+  @@index([teamId])
+  @@index([createdByUserId])
+  @@index([status])
+}
+
+model TaskAssignment {
+  id        String   @id @default(uuid())
+  taskId    String
+  userId    String
+  assignedAt DateTime @default(now())
+  
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, userId])
+  @@index([userId])
+  @@index([taskId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  note      String
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}

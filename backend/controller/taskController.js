@@ -1,51 +1,200 @@
-let tasksData = [
-    { id: 1, title: "Task 1", description: "Description 1", priority: 1, dueDate: "2022-01-01", completed: false },
-    { id: 2, title: "Task 2", description: "Description 2", priority: 2, dueDate: "2022-02-01", completed: true },
-    { id: 3, title: "Task 3", description: "Description 3", priority: 3, dueDate: "2022-03-01", completed: false }
-];
+import { getTeamTasks, getTaskById as getTakById, createTeamTask, updateTask as upTask, deleteTask as deTask, assignTaskToUser, unassignTaskFromUser, getUserAssignedTasks, addComment, getTaskComments, deleteComment } from '../controller/prismaController.js';
 
-const getAllTasks = (req, res) => {
-    res.status(200).json(tasksData);
+const getAllTasks = async (req, res) => {
+    try {
+        const { teamId } = req.params;
+        const tasks = await getTeamTasks(teamId);
+        res.status(200).json(tasks);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
-const getTaskById = (req, res) => {
-    const task = tasksData.find(t => t.id === Number(req.params.id));
-    if (!task) return res.sendStatus(404);
-    res.status(200).json(task);
+const getTaskById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const task = await getTakById(id);
+        if (!task) return res.status(404).json({ error: 'Task not found' });
+        res.status(200).json(task);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
-const createTask = (req, res) => {
-    const task = {
-        id: tasksData.length ? Math.max(...tasksData.map(t => t.id)) + 1 : 1,
-        title: req.body.title,
-        description: req.body.description,
-        priority: req.body.priority,
-        dueDate: req.body.dueDate,
-        completed: req.body.completed
-    };
-    tasksData.push(task);
-    res.status(201).json(task);
+const getFilteredTasks = async (req, res) => {
+    try {
+        const { teamId } = req.params;
+        const {
+            status,
+            priority,
+            assignedUserId,
+            dueDateFrom,
+            dueDateTo,
+            sortBy,
+            sortOrder
+        } = req.query;
+
+        const filters = {};
+        if (status) filters.status = status;
+        if (priority) filters.priority = priority;
+        if (assignedUserId) filters.assignedUserId = assignedUserId;
+        if (dueDateFrom) filters.dueDateFrom = dueDateFrom;
+        if (dueDateTo) filters.dueDateTo = dueDateTo;
+        if (sortBy) filters.sortBy = sortBy;
+        if (sortOrder) filters.sortOrder = sortOrder;
+
+        const tasks = await getFilteredTeamTasks(teamId, filters);
+        res.status(200).json(tasks);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
-const updateTask = (req, res) => {
-    const task = tasksData.find(t => t.id === Number(req.params.id));
-    if (!task) return res.sendStatus(404);
+const createTask = async (req, res) => {
+    try {
+        const { 
+            title, 
+            description, 
+            priority, 
+            dueDate, 
+            teamId, 
+            createdByUserId,
+            assignedToUserIds 
+        } = req.body;
 
-    const { title, description, priority, dueDate, completed } = req.body;
-    if (title !== undefined) task.title = title;
-    if (description !== undefined) task.description = description;
-    if (priority !== undefined) task.priority = priority;
-    if (dueDate !== undefined) task.dueDate = dueDate;
-    if (completed !== undefined) task.completed = completed;
+        if (!title || !teamId || !createdByUserId) {
+            return res.status(400).json({ 
+                error: 'Missing required fields: title, teamId, createdByUserId' 
+            });
+        }
 
-    res.status(200).json(task);
+        const task = await createTeamTask(
+            title,
+            description,
+            priority || 'MEDIUM',
+            dueDate,
+            teamId,
+            createdByUserId,
+            assignedToUserIds || []
+        );
+
+        res.status(201).json(task);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
-const deleteTask = (req, res) => { 
-    const exists = tasksData.some(t => t.id === Number(req.params.id));
-    if (!exists) return res.sendStatus(404);
-    tasksData = tasksData.filter(t => t.id !== Number(req.params.id));
-    res.sendStatus(204);
+const updateTask = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, description, priority, dueDate, status } = req.body;
+
+        const task = await upTask(id, {
+            title,
+            description,
+            priority,
+            dueDate,
+            status
+        });
+
+        if (!task) return res.status(404).json({ error: 'Task not found' });
+        res.status(200).json(task);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
-module.exports = { getAllTasks, getTaskById, createTask, updateTask, deleteTask };
+const deleteTask = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const task = await deTask(id);
+        if (!task) return res.status(404).json({ error: 'Task not found' });
+        res.sendStatus(204);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const getUserTasks = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const tasks = await getUserAssignedTasks(userId);
+        res.status(200).json(tasks);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const assignTask = async (req, res) => {
+    try {
+        const { taskId, userId } = req.body;
+
+        if (!taskId || !userId) {
+            return res.status(400).json({ 
+                error: 'Missing required fields: taskId, userId' 
+            });
+        }
+
+        const assignment = await assignTaskToUser(taskId, userId);
+        res.status(201).json(assignment);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const unassignTask = async (req, res) => {
+    try {
+        const { taskId, userId } = req.body;
+
+        if (!taskId || !userId) {
+            return res.status(400).json({ 
+                error: 'Missing required fields: taskId, userId' 
+            });
+        }
+
+        const assignment = await unassignTaskFromUser(taskId, userId);
+        res.status(200).json(assignment);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const createComment = async (req, res) => {
+    try {
+        const { taskId, note } = req.body;
+
+        if (!taskId || !note) {
+            return res.status(400).json({ 
+                error: 'Missing required fields: taskId, note' 
+            });
+        }
+
+        const comment = await addComment(taskId, note);
+        res.status(201).json(comment);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const getComments = async (req, res) => {
+    try {
+        const { taskId } = req.params;
+        const comments = await getTaskComments(taskId);
+        res.status(200).json(comments);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const removeComment = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const comment = await deleteComment(id);
+        if (!comment) return res.status(404).json({ error: 'Comment not found' });
+        res.sendStatus(204);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export { getAllTasks, getTaskById, createTask, updateTask, deleteTask, getUserTasks, assignTask, unassignTask, createComment, getComments, removeComment, getFilteredTasks };
