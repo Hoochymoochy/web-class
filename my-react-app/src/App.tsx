@@ -5,16 +5,49 @@ import About from './page/About';
 import Task from './page/Task';
 import NotFound from './page/NotFound';
 import Header from './Components/Header';
+import Grainient from './Components/Grainient';
+import Login from './page/Login';
+
 function App() {
   return (
-    <div className="App">
+    <div className="relative min-h-screen overflow-hidden">
+      
+      <div className="fixed inset-0 -z-10 pointer-events-none">
+        <Grainient
+          color1="#140F1F"
+          color2="#2A145A"
+          color3="#4B2A84"
+          timeSpeed={0.25}
+          colorBalance={0}
+          warpStrength={1}
+          warpFrequency={5}
+          warpSpeed={2}
+          warpAmplitude={50}
+          blendAngle={0}
+          blendSoftness={0.05}
+          rotationAmount={500}
+          noiseScale={2}
+          grainAmount={0.1}
+          grainScale={2}
+          grainAnimated={false}
+          contrast={1.5}
+          gamma={1}
+          saturation={1}
+          centerX={0}
+          centerY={0}
+          zoom={0.9}
+        />
+      </div>
+
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/task/:id" element={<Task />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
+
     </div>
   );
 }
