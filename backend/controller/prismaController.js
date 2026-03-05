@@ -89,20 +89,21 @@ async function removeUserFromTeam(userId, teamId){
     return member
 }
 
-async function updateRoleFromTeam(userId, teamId, role){
+async function updateRoleFromTeam(userId, teamId, role) {
     const member = await prisma.teamMember.update({
-        where: {
-            userId_teamId: {
-                userId,
-                teamId
-            }
-        },
-        data: {
-            role
-        } 
+      where: {
+        userId_teamId: {
+          userId,
+          teamId
+        }
+      },
+      data: {
+        role
+      }
     })
+  
     return member
-}
+  }
 
 async function getTeamById(teamId){
     const team = await prisma.team.findUnique({

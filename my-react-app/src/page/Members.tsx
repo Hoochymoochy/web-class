@@ -56,27 +56,27 @@ function TeamMembers() {
         }
     };
 
-    const handlePromoteAdmin = async (memberId: number) => {
+    const handlePromoteAdmin = async (userId: string) => {
         const token = localStorage.getItem("token");
-
+    
         if (!token || !teamId) {
             setError('Authentication required');
             return;
         }
-
+    
         try {
-            const response = await fetch(`http://localhost:3001/api/teams/${teamId}/members/${memberId}/promote`, {
+            const response = await fetch(`http://localhost:3001/api/teams/promote/${userId}/${teamId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });
-
+    
             if (!response.ok) {
                 throw new Error('Failed to promote member');
             }
-
+    
             setOpenMenuId(null);
             await fetchMembers();
         } catch (err) {
@@ -85,7 +85,7 @@ function TeamMembers() {
         }
     };
 
-    const handleRemoveMember = async (memberId: number) => {
+    const handleRemoveMember = async (userId: number) => {
         const token = localStorage.getItem("token");
 
         if (!token || !teamId) {
@@ -94,7 +94,7 @@ function TeamMembers() {
         }
 
         try {
-            const response = await fetch(`http://localhost:3001/api/teams/${teamId}/members/${memberId}`, {
+            const response = await fetch(`http://localhost:3001/api/teams/remove-member/${userId}/${teamId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -201,13 +201,13 @@ function TeamMembers() {
                                 {openMenuId === member.id && (
                                     <div className="absolute top-14 right-4 flex flex-col gap-2">
                                         <button
-                                            onClick={() => handlePromoteAdmin(member.id)}
+                                            onClick={() => handlePromoteAdmin(member.userId)}
                                             className="text-green-500"
                                         >
                                             Promote to Admin
                                         </button>
                                         <button
-                                            onClick={() => handleRemoveMember(member.id)}
+                                            onClick={() => handleRemoveMember(member.userId)}
                                             className="text-red-500"
                                         >
                                             Remove

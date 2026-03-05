@@ -26,14 +26,14 @@ const getUserTeams = async (req, res) => {
 }
 
 const promoteMember = async (req, res) => {
-    const { user_id, team_id } = req.body;
-    const team = await updateRoleFromTeam(user_id, team_id, "TEAMADMIN");
+    const { userId, teamId } = req.params;
+    const team = await updateRoleFromTeam(userId, teamId, "TEAMADMIN");
     res.status(201).json(team);
 }
 
 const removeMember = async (req, res) => {
-    const { user_id, team_id } = req.body;
-    const team = await removeUserFromTeam(user_id, team_id, "BASIC");
+    const { userId, teamId } = req.params;
+    const team = await removeUserFromTeam(userId, teamId);
     res.status(201).json(team);
 }
 

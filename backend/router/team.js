@@ -7,7 +7,7 @@ router.post("/", createTeam);
 router.get("/:id", getTeams);
 router.post("/add-member", addTeamMember);
 router.get("/member/:id", getUserTeams);
-router.get("/promote/:id", promoteMember);
-router.delete("/remove-member/:id", removeMember);
+router.put("/promote/:userId/:teamId", promoteMember);
+router.delete("/remove-member/:userId/:teamId", removeMember);
 
 export default router;
