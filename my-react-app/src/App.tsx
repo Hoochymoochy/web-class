@@ -45,13 +45,13 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="team/task/:id" element={<Task />} />
+        <Route path="/team/task/:id" element={<Task />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/team" element={<Team />} />
-        <Route path="team/members" element={<Members />} />
-        <Route path="team/tasks" element={<Tasks />} />
+        <Route path="/team/:teamId/members" element={<Members />} />
+        <Route path="/team/:teamId/tasks" element={<Tasks />} />
       </Routes>
 
     </div>

@@ -7,8 +7,8 @@ const createTeam = async (req, res) => {
 };
 
 const addTeamMember = async (req, res) => {
-    const { user_id, team_id } = req.body;
-    const team = await addUserToTeam(user_id, team_id);
+    const { user_email, team_id } = req.body;
+    const team = await addUserToTeam(user_email, team_id);
     res.status(201).json(team);
 }
 

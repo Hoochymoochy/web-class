@@ -65,10 +65,11 @@ async function createTeam(name, userId){
     return team
 }
 
-async function addUserToTeam(userId, teamId, role="BASIC"){
+async function addUserToTeam(user_email, teamId, role="BASIC"){
+    const user_id = await getUser(user_email)
     const member = await prisma.teamMember.create({
         data: {
-            userId,
+            userId: user_id.id,
             teamId,
             role
         }

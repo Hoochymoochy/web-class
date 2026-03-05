@@ -145,12 +145,12 @@ function Team() {
                                     <tr key={team.id} className="border-b border-slate-700/30 hover:bg-slate-700/20 transition-colors duration-150">
                                         <td className="px-6 py-4 text-slate-100 font-medium">{team.name}</td>
                                         <td className="px-6 py-4">
-                                            <a href="/team/members" className="text-blue-400 hover:text-blue-300 hover:underline transition-colors">
+                                            <a href={`/team/${team.id}/members`} className="text-blue-400 hover:text-blue-300 hover:underline transition-colors">
                                                 View Members
                                             </a>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <a href="/team/tasks" className="text-blue-400 hover:text-blue-300 hover:underline transition-colors">
+                                            <a href={`/team/${team.id}/tasks`} className="text-blue-400 hover:text-blue-300 hover:underline transition-colors">
                                                 View Tasks
                                             </a>
                                         </td>
