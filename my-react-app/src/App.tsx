@@ -4,9 +4,9 @@ import Home from './page/Home';
 import About from './page/About';
 import Task from './page/Task';
 import NotFound from './page/NotFound';
-import Header from './Components/Header';
 import Grainient from './Components/Grainient';
 import Login from './page/Login';
+import Register from './page/Register';
 
 function App() {
   return (
@@ -39,13 +39,13 @@ function App() {
         />
       </div>
 
-      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/task/:id" element={<Task />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
 
     </div>
