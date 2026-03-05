@@ -11,7 +11,7 @@ function Register() {
                 className="text-2xl mb-8"
             />
 
-            <div className="flex flex-col space-y-4 p-4 w-full max-w-md bg-white/10 rounded-sm">
+            <div className="flex flex-col space-y-4 p-4 w-full max-w-md bg-white/10 rounded-sm border-white/20 border">
                 <label className="text-xl">Email</label>    
                 <input type="email" className="bg-white/10 border-black/10 border-2 p-2" />
                 <label>Password</label>
