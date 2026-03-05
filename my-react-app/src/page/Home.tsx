@@ -59,20 +59,24 @@ function Home() {
   return (
     <div className='flex justify-center flex-col items-center p-4'>
 
-      <form onSubmit={e => e.preventDefault()}>
+      {/* <form onSubmit={e => e.preventDefault()}>
         <input type="text" placeholder="Title" value={title} onChange={e => setTitle(e.target.value)}/>
         <input type="text" placeholder="Description" value={description} onChange={e => setDescription(e.target.value)}/>
         <input type="number" placeholder="Priority" value={priority} onChange={e => setPriority(Number(e.target.value))} />
         <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)}/>
         <button type="button" onClick={handleAddTask}>Add Task</button>
-      </form>
+      </form> */}
 
-      <TaskList
+      {/* <TaskList
         tasks={tasks}
         onDelete={handleDeleteTask}
         handleCompleteTask={handleCompleteTask}
       />
-            {loading && <p>Loading...</p>}
+      {loading && <p>Loading...</p>} */}
+
+      <button onClick={() => window.location.href = '/team'}>
+        Create Team
+      </button>
 
     </div>
   )

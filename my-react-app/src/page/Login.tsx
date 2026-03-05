@@ -43,7 +43,7 @@ function Login() {
             const data = await response.json();
             console.log(data);
             localStorage.setItem('token', data.token);
-            localStorage.setItem('userId', data.id.id);
+            localStorage.setItem('userId', data.id);
             window.location.href = '/';
         } catch (err) {
             setError('An error occurred. Please try again.');
