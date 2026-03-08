@@ -157,18 +157,25 @@ async function getAllUserTeams(userId){
 async function createTeamTask(
     title,
     description,
-    priority,
+    priority_,
     dueDate,
     teamId,
     createdByUserId,
     assignedToUserIds = []
 ) {
+    const priorityMap = {
+        1: "HIGH",
+        2: "MEDIUM",
+        3: "LOW"
+      };
+      
+    const priority = priorityMap[priority_];
     const task = await prisma.task.create({
         data: {
             title,
             description,
             priority,
-            dueDate,
+            dueDate: new Date(dueDate).toISOString(),
             teamId,
             createdByUserId,
             assignments: assignedToUserIds.length > 0 ? {
@@ -176,6 +183,47 @@ async function createTeamTask(
                     userId
                 }))
             } : undefined
+        },
+        include: {
+            createdBy: true,
+            team: true,
+            assignments: {
+                include: {
+                    user: true
+                }
+            },
+            comments: true
+        }
+    })
+    return task
+}
+
+async function createPersonalTask(
+    title,
+    description,
+    priority_,
+    dueDate,
+    createdByUserId,
+) {
+    const priorityMap = {
+        1: "HIGH",
+        2: "MEDIUM",
+        3: "LOW"
+    };
+      
+    const priority = priorityMap[priority_];
+    const task = await prisma.task.create({
+        data: {
+            title,
+            description,
+            priority,
+            dueDate: new Date(dueDate).toISOString(),
+            createdByUserId,
+            assignments: {
+                create: {
+                    userId: createdByUserId
+                }
+            }
         },
         include: {
             createdBy: true,
@@ -328,26 +376,30 @@ async function getTasksByStatus(teamId, status) {
 
 async function getUserAssignedTasks(userId) {
     const assignments = await prisma.taskAssignment.findMany({
-        where: {
-            userId
-        },
-        include: {
-            task: {
-                include: {
-                    team: true,
-                    createdBy: true,
-                    assignments: {
-                        include: {
-                            user: true
-                        }
-                    },
-                    comments: true
-                }
-            }
+      where: {
+        userId,
+        task: {
+          teamId: null
         }
-    })
-    return assignments.map(a => a.task)
-}
+      },
+      include: {
+        task: {
+          include: {
+            team: true,
+            createdBy: true,
+            assignments: {
+              include: {
+                user: true
+              }
+            },
+            comments: true
+          }
+        }
+      }
+    });
+  
+    return assignments.map(a => a.task);
+  }
 
 async function getTaskById(taskId) {
     const task = await prisma.task.findUnique({
@@ -438,6 +490,7 @@ export {
     addUser,
     getUser,
     getUserById,
+    createPersonalTask,
     
     // Team functions
     createTeam,

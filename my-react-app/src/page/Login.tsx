@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import BlurText from "./../Components/BlurText";
 
+
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -23,7 +24,7 @@ function Login() {
 
         try {
             setLoading(true);
-            const response = await fetch('http://192.168.1.226/api/oauth/login', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/oauth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -29,7 +29,7 @@ function TeamMembers() {
 
         try {
             setLoading(true);
-            const response = await fetch(`http://localhost:3001/api/teams/${teamId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/teams/${teamId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -65,7 +65,7 @@ function TeamMembers() {
         }
     
         try {
-            const response = await fetch(`http://localhost:3001/api/teams/promote/${userId}/${teamId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/teams/promote/${userId}/${teamId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -94,7 +94,7 @@ function TeamMembers() {
         }
 
         try {
-            const response = await fetch(`http://localhost:3001/api/teams/remove-member/${userId}/${teamId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/teams/remove-member/${userId}/${teamId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -132,7 +132,7 @@ function TeamMembers() {
         try {
             setCreating(true);
             setError('');
-            const response = await fetch(`http://localhost:3001/api/teams/add-member`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/teams/add-member`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

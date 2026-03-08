@@ -17,6 +17,8 @@ function Team() {
         const userId = localStorage.getItem("userId");
         const token = localStorage.getItem("token");
 
+        console.log(userId + '\n' + token);
+
         if (!userId || !token) {
             setError('Authentication required');
             return;
@@ -24,7 +26,7 @@ function Team() {
 
         try {
             setLoading(true);
-            const response = await fetch(`http://localhost:3001/api/teams/member/${userId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/teams/member/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -71,7 +73,7 @@ function Team() {
 
         try {
             setCreating(true);
-            const response = await fetch('http://localhost:3001/api/teams', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/teams`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

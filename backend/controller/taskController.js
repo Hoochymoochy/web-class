@@ -1,10 +1,15 @@
-import { getTeamTasks, getTaskById as getTakById, createTeamTask, updateTask as upTask, deleteTask as deTask, assignTaskToUser, unassignTaskFromUser, getUserAssignedTasks, addComment, getTaskComments, deleteComment } from '../controller/prismaController.js';
+import { getTeamTasks, getTaskById as getTakById, createTeamTask, updateTask as upTask, deleteTask as deTask, assignTaskToUser, unassignTaskFromUser, getUserAssignedTasks, addComment, getTaskComments, deleteComment, createPersonalTask } from '../controller/prismaController.js';
 
 const getAllTasks = async (req, res) => {
     try {
         const { teamId } = req.params;
+
         const tasks = await getTeamTasks(teamId);
-        res.status(200).json(tasks);
+
+        res.status(200).json({
+            tasks
+        });
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -52,37 +57,50 @@ const getFilteredTasks = async (req, res) => {
 
 const createTask = async (req, res) => {
     try {
-        const { 
-            title, 
-            description, 
-            priority, 
-            dueDate, 
-            teamId, 
-            createdByUserId,
-            assignedToUserIds 
-        } = req.body;
-
-        if (!title || !teamId || !createdByUserId) {
-            return res.status(400).json({ 
-                error: 'Missing required fields: title, teamId, createdByUserId' 
-            });
-        }
-
-        const task = await createTeamTask(
-            title,
-            description,
-            priority || 'MEDIUM',
-            dueDate,
-            teamId,
-            createdByUserId,
-            assignedToUserIds || []
+      const {
+        title,
+        description,
+        priority,
+        dueDate,
+        teamId,
+        createdByUserId,
+        assignedToUserIds
+      } = req.body;
+  
+      if (!title || !createdByUserId) {
+        return res.status(400).json({
+          error: "Missing required fields: title, createdByUserId"
+        });
+      }
+  
+      let task;
+  
+      if (teamId) {
+        task = await createTeamTask(
+          title,
+          description,
+          priority,
+          dueDate,
+          teamId,
+          createdByUserId,
+          assignedToUserIds || []
         );
-
-        res.status(201).json(task);
+      } else {
+        task = await createPersonalTask(
+          title,
+          description,
+          priority,
+          dueDate,
+          createdByUserId,
+          assignedToUserIds || []
+        );
+      }
+  
+      res.status(201).json(task);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
-};
+  };
 
 const updateTask = async (req, res) => {
     try {
@@ -119,7 +137,7 @@ const getUserTasks = async (req, res) => {
     try {
         const { userId } = req.params;
         const tasks = await getUserAssignedTasks(userId);
-        res.status(200).json(tasks);
+        res.status(200).json({ tasks });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

@@ -2,7 +2,6 @@
 import { Routes, Route } from 'react-router-dom';
 import Home from './page/Home';
 import About from './page/About';
-import Task from './page/Task';
 import NotFound from './page/NotFound';
 import Grainient from './Components/Grainient';
 import Login from './page/Login';
@@ -45,7 +44,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/team/task/:id" element={<Task />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

@@ -74,8 +74,8 @@ model Task {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
-  teamId String
-  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId String?
+  team   Team? @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   createdByUserId String
   createdBy       User   @relation(fields: [createdByUserId], references: [id], onDelete: Cascade)
