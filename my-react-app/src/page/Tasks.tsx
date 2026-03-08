@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import BlurText from "./../Components/BlurText";
 import { useParams } from 'react-router-dom';
+import Header from '../Components/Header';
 
 interface TaskAssignment {
     id: string;
@@ -259,6 +260,7 @@ function Tasks() {
 
     return (
         <div className="flex justify-center flex-col items-center p-4 min-h-screen">
+            <Header />
             <BlurText
                 text="Team Tasks"
                 delay={200}

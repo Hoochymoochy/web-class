@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import BlurText from "./../Components/BlurText";
+import Header from "./../Components/Header";
 
 function Team() {
     const [teams, setTeams] = useState([]);
@@ -103,6 +104,7 @@ function Team() {
 
     return (
         <div className="flex justify-center flex-col items-center p-4 min-h-screen ">
+            <Header />
             <BlurText
                 text="Manage your team"
                 delay={200}
