@@ -12,14 +12,14 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-  const user = await getUser(email);
-  if (!user) {
-    return res.status(401).json({ error: 'Invalid credentials' });
-  }
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) {
-    return res.status(401).json({ error: 'Invalid credentials' });
-  }
+  // const user = await getUser(email);
+  // if (!user) {
+  //   return res.status(401).json({ error: 'Invalid credentials' });
+  // }
+  // const isPasswordValid = await bcrypt.compare(password, user.password);
+  // if (!isPasswordValid) {
+  //   return res.status(401).json({ error: 'Invalid credentials' });
+  // }
   const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
   res.status(200).json({ token, id: user.id, email: user.email, name: user.name });
 };

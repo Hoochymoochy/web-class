@@ -1,0 +1,9 @@
+brew install postgresql
+brew services start postgresql
+
+psql postgres
+CREATE DATABASE webclass;
+\q
+
+npx prisma generate
+npx prisma db push

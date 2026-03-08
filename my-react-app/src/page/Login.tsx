@@ -23,7 +23,7 @@ function Login() {
 
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:3001/api/oauth/login', {
+            const response = await fetch('http://192.168.1.226/api/oauth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
