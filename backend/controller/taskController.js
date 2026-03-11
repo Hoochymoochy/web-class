@@ -55,6 +55,23 @@ const getFilteredTasks = async (req, res) => {
     }
 };
 
+const assignTask = async (req, res) => {
+    try {
+        const { taskId, userId } = req.body;
+
+        if (!taskId || !userId) {
+            return res.status(400).json({ 
+                error: 'Missing required fields: taskId, userId' 
+            });
+        }
+
+        const assignment = await assignTaskToUser(taskId, userId);
+        res.status(201).json(assignment);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 const createTask = async (req, res) => {
     try {
       const {
@@ -143,22 +160,7 @@ const getUserTasks = async (req, res) => {
     }
 };
 
-const assignTask = async (req, res) => {
-    try {
-        const { taskId, userId } = req.body;
 
-        if (!taskId || !userId) {
-            return res.status(400).json({ 
-                error: 'Missing required fields: taskId, userId' 
-            });
-        }
-
-        const assignment = await assignTaskToUser(taskId, userId);
-        res.status(201).json(assignment);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
 
 const unassignTask = async (req, res) => {
     try {
@@ -177,6 +179,15 @@ const unassignTask = async (req, res) => {
     }
 };
 
+const getComments = async (req, res) => {
+    try {
+        const { taskId } = req.params;
+        const comments = await getTaskComments(taskId);
+        res.status(200).json(comments);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 const createComment = async (req, res) => {
     try {
         const { taskId, note } = req.body;
@@ -189,16 +200,6 @@ const createComment = async (req, res) => {
 
         const comment = await addComment(taskId, note);
         res.status(201).json(comment);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-const getComments = async (req, res) => {
-    try {
-        const { taskId } = req.params;
-        const comments = await getTaskComments(taskId);
-        res.status(200).json(comments);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

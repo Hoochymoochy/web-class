@@ -77,34 +77,6 @@ async function addUserToTeam(user_email, teamId, role="BASIC"){
     return member
 }
 
-async function removeUserFromTeam(userId, teamId){
-    const member = await prisma.teamMember.delete({
-        where: {
-            userId_teamId: {
-                userId,
-                teamId
-            }
-        }
-    })
-    return member
-}
-
-async function updateRoleFromTeam(userId, teamId, role) {
-    const member = await prisma.teamMember.update({
-      where: {
-        userId_teamId: {
-          userId,
-          teamId
-        }
-      },
-      data: {
-        role
-      }
-    })
-  
-    return member
-  }
-
 async function getTeamById(teamId){
     const team = await prisma.team.findUnique({
         where: {
@@ -152,6 +124,35 @@ async function getAllUserTeams(userId){
     return teams.map(t => t.team)
 }
 
+async function updateRoleFromTeam(userId, teamId, role) {
+    const member = await prisma.teamMember.update({
+      where: {
+        userId_teamId: {
+          userId,
+          teamId
+        }
+      },
+      data: {
+        role
+      }
+    })
+  
+    return member
+  }
+
+
+
+async function removeUserFromTeam(userId, teamId){
+    const member = await prisma.teamMember.delete({
+        where: {
+            userId_teamId: {
+                userId,
+                teamId
+            }
+        }
+    })
+    return member
+}
 // ============= TASK FUNCTIONS (Team Tasks) =============
 
 async function createTeamTask(
@@ -237,54 +238,6 @@ async function createPersonalTask(
         }
     })
     return task
-}
-
-async function assignTaskToUser(taskId, userId) {
-    const assignment = await prisma.taskAssignment.create({
-        data: {
-            taskId,
-            userId
-        },
-        include: {
-            user: true,
-            task: true
-        }
-    })
-    return assignment
-}
-
-async function unassignTaskFromUser(taskId, userId) {
-    const assignment = await prisma.taskAssignment.delete({
-        where: {
-            taskId_userId: {
-                taskId,
-                userId
-            }
-        }
-    })
-    return assignment
-}
-
-async function getTeamTasks(teamId) {
-    const tasks = await prisma.task.findMany({
-        where: {
-            teamId
-        },
-        include: {
-            createdBy: true,
-            team: true,
-            assignments: {
-                include: {
-                    user: true
-                }
-            },
-            comments: true
-        },
-        orderBy: {
-            createdAt: 'desc'
-        }
-    })
-    return tasks
 }
 
 async function getFilteredTeamTasks(teamId, filters = {}) {
@@ -374,6 +327,28 @@ async function getTasksByStatus(teamId, status) {
     return tasks
 }
 
+async function getTeamTasks(teamId) {
+    const tasks = await prisma.task.findMany({
+        where: {
+            teamId
+        },
+        include: {
+            createdBy: true,
+            team: true,
+            assignments: {
+                include: {
+                    user: true
+                }
+            },
+            comments: true
+        },
+        orderBy: {
+            createdAt: 'desc'
+        }
+    })
+    return tasks
+}
+
 async function getUserAssignedTasks(userId) {
     const assignments = await prisma.taskAssignment.findMany({
       where: {
@@ -420,6 +395,33 @@ async function getTaskById(taskId) {
     return task
 }
 
+async function assignTaskToUser(taskId, userId) {
+    const assignment = await prisma.taskAssignment.create({
+        data: {
+            taskId,
+            userId
+        },
+        include: {
+            user: true,
+            task: true
+        }
+    })
+    return assignment
+}
+
+async function unassignTaskFromUser(taskId, userId) {
+    const assignment = await prisma.taskAssignment.delete({
+        where: {
+            taskId_userId: {
+                taskId,
+                userId
+            }
+        }
+    })
+    return assignment
+}
+
+
 async function updateTask(taskId, data) {
     const task = await prisma.task.update({
         where: {
@@ -442,6 +444,9 @@ async function updateTask(taskId, data) {
     })
     return task
 }
+
+
+
 
 async function deleteTask(taskId) {
     const task = await prisma.task.delete({
