@@ -1,0 +1,20 @@
+/**
+ * Red Button design tokens
+ * Source: design/RED_BUTTON_SPEC.md (agent/design)
+ * Consumption: optional — Frontend may use Tailwind utilities directly instead.
+ */
+
+:root {
+  --red-button-bg: #dc2626;           /* Tailwind red-600 */
+  --red-button-bg-hover: #b91c1c;     /* Tailwind red-700 */
+  --red-button-bg-active: #991b1b;    /* Tailwind red-800 */
+  --red-button-text: #ffffff;
+  --red-button-focus-ring: rgba(248, 113, 113, 0.7); /* red-400 @ 70% */
+  --red-button-focus-offset: #0f172a; /* slate-900 — matches dark gradient pages */
+  --red-button-radius: 8px;
+  --red-button-padding-y: 8px;
+  --red-button-padding-x: 16px;
+  --red-button-font-weight: 500;
+  --red-button-transition: background-color 200ms ease;
+  --red-button-disabled-opacity: 0.5;
+}
