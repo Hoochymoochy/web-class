@@ -89,6 +89,45 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Accessible red button: WCAG AA contrast, keyboard focus, native semantics */
+.red-button {
+  background-color: #b91c1c;
+  color: #ffffff;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.red-button:hover:not(:disabled) {
+  background-color: #991b1b;
+}
+
+.red-button:active:not(:disabled) {
+  background-color: #7f1d1d;
+}
+
+.red-button:focus {
+  outline: none;
+}
+
+.red-button:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px #2563eb;
+}
+
+.red-button:disabled,
+.red-button[aria-disabled='true'] {
+  background-color: #b91c1c;
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
