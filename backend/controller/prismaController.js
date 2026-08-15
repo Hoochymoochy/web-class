@@ -45,6 +45,45 @@ async function getUserById(id) {
     return user
 }
 
+async function getUserByGoogleId(googleId) {
+    const user = await prisma.user.findUnique({
+        where: { googleId }
+    })
+    return user
+}
+
+async function upsertGoogleUser({ googleId, email, name, avatar }) {
+    const existingByGoogleId = await prisma.user.findUnique({
+        where: { googleId }
+    })
+
+    if (existingByGoogleId) {
+        const user = await prisma.user.update({
+            where: { id: existingByGoogleId.id },
+            data: { name, avatar, email }
+        })
+        return { id: user.id, email: user.email, name: user.name }
+    }
+
+    const existingByEmail = await prisma.user.findUnique({
+        where: { email }
+    })
+
+    if (existingByEmail) {
+        const user = await prisma.user.update({
+            where: { id: existingByEmail.id },
+            data: { googleId, name, avatar }
+        })
+        return { id: user.id, email: user.email, name: user.name }
+    }
+
+    const user = await prisma.user.create({
+        data: { googleId, email, name, avatar }
+    })
+
+    return { id: user.id, email: user.email, name: user.name }
+}
+
 // ============= TEAM FUNCTIONS =============
 
 async function createTeam(name, userId){
@@ -495,6 +534,8 @@ export {
     addUser,
     getUser,
     getUserById,
+    getUserByGoogleId,
+    upsertGoogleUser,
     createPersonalTask,
     
     // Team functions
