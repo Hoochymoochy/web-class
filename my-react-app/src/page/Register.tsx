@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import BlurText from "./../Components/BlurText";
+import { Link, useNavigate } from 'react-router-dom';
+import BlurText from './../Components/BlurText';
+import GoogleSignInButton from './../Components/GoogleSignInButton';
+import { useAuth } from '../auth/AuthContext';
+import { BACKEND_URL } from '../config';
 
 function Register() {
     const [email, setEmail] = useState('');
@@ -7,6 +11,8 @@ function Register() {
     const [username, setUsername ]= useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const { saveSession } = useAuth();
+    const navigate = useNavigate();
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -24,7 +30,7 @@ function Register() {
 
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:3001/api/oauth/register', {
+            const response = await fetch(`${BACKEND_URL}/api/oauth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -38,15 +44,18 @@ function Register() {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                setError(errorData.message || 'Registration failed');
+                setError(errorData.error || errorData.message || 'Registration failed');
                 return;
             }
 
             const data = await response.json();
-            console.log(data);
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('userId', data.id.id);
-            window.location.href = '/';
+            saveSession({
+                token: data.token,
+                userId: data.id,
+                email: data.email,
+                name: data.name,
+            });
+            navigate('/', { replace: true });
         } catch (err) {
             setError('An error occurred. Please try again.');
             console.error(err);
@@ -66,6 +75,14 @@ function Register() {
             />
 
             <form onSubmit={handleRegister} className="flex flex-col space-y-4 p-4 w-full max-w-md card-bg rounded-sm">
+                <GoogleSignInButton />
+
+                <div className="flex items-center gap-3 text-sm text-black/60">
+                    <span className="h-px flex-1 bg-black/10" />
+                    or sign up with email
+                    <span className="h-px flex-1 bg-black/10" />
+                </div>
+
                 <label className="text-xl">Email</label>    
                 <input 
                     type="email" 
@@ -102,12 +119,12 @@ function Register() {
 
                 <div className="flex justify-between items-center">
                     <p>Have an account?</p>
-                    <a href="/login" className="flex items-center gap-1 cursor-pointer hover:underline">
+                    <Link to="/login" className="flex items-center gap-1 cursor-pointer hover:underline">
                         Login in
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
                         </svg>
-                    </a>
+                    </Link>
                 </div>
             </form>
         </div>
