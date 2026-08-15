@@ -1,17 +1,17 @@
 import jwt from "jsonwebtoken";
-
-const SECRET_KEY = process.env.JWT_SECRET;
+import { env } from "../config/env.js";
+import { getTokenFromRequest } from "../security/tokens.js";
 
 export function authenticateToken(req, res, next) {
-  const token = req.headers["authorization"]?.split(" ")[1];
+  const token = getTokenFromRequest(req);
 
   if (!token) {
-    return res.status(403).send("Token required");
+    return res.status(403).json({ error: "Token required" });
   }
 
-  jwt.verify(token, SECRET_KEY, (err, user) => {
+  jwt.verify(token, env.jwtSecret, (err, user) => {
     if (err) {
-      return res.status(403).send("Invalid token");
+      return res.status(403).json({ error: "Invalid token" });
     }
 
     req.user = user;

@@ -26,10 +26,17 @@ enum Role {
   SUPERADMIN
 }
 
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+}
+
 model User {
   id    String   @id @default(uuid())
   email String   @unique
-  password  String
+  password  String?
+  googleId  String?  @unique
+  authProvider AuthProvider @default(LOCAL)
   name  String
   createdAt DateTime @default(now())
 

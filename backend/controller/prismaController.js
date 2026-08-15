@@ -4,12 +4,13 @@ const prisma = new PrismaClient()
 
 // ============= USER FUNCTIONS =============
 
-async function addUser(email, password, name) {
+async function addUser(email, password, name, authProvider = "LOCAL") {
     const user = await prisma.user.create({
       data: {
         email,
         password,
         name,
+        authProvider,
       },
     });
   
@@ -17,7 +18,37 @@ async function addUser(email, password, name) {
       id: user.id,
       email: user.email,
       name: user.name,
+      authProvider: user.authProvider,
     };
+}
+
+async function findUserByGoogleId(googleId) {
+    return prisma.user.findUnique({
+        where: { googleId },
+    });
+}
+
+async function createGoogleUser({ email, name, googleId }) {
+    const user = await prisma.user.create({
+        data: {
+            email,
+            name,
+            googleId,
+            authProvider: "GOOGLE",
+        },
+    });
+
+    return user;
+}
+
+async function linkGoogleAccount(userId, googleId) {
+    return prisma.user.update({
+        where: { id: userId },
+        data: {
+            googleId,
+            authProvider: "GOOGLE",
+        },
+    });
 }
 
 async function getUser(email) {
@@ -495,6 +526,9 @@ export {
     addUser,
     getUser,
     getUserById,
+    findUserByGoogleId,
+    createGoogleUser,
+    linkGoogleAccount,
     createPersonalTask,
     
     // Team functions
