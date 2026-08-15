@@ -1,4 +1,3 @@
-// App.js
 import { Routes, Route } from 'react-router-dom';
 import Home from './page/Home';
 import About from './page/About';
@@ -6,9 +5,11 @@ import NotFound from './page/NotFound';
 import Grainient from './Components/Grainient';
 import Login from './page/Login';
 import Register from './page/Register';
+import AuthCallback from './page/AuthCallback';
 import Team from './page/Team';
 import Members from './page/Members';
 import Tasks from './page/Tasks';
+import ProtectedRoute from './auth/ProtectedRoute';
 
 function App() {
   return (
@@ -42,14 +43,15 @@ function App() {
       </div>
 
       <Routes>
-        <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="*" element={<NotFound />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/team" element={<Team />} />
-        <Route path="/team/:teamId/members" element={<Members />} />
-        <Route path="/team/:teamId/tasks" element={<Tasks />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/team" element={<ProtectedRoute><Team /></ProtectedRoute>} />
+        <Route path="/team/:teamId/members" element={<ProtectedRoute><Members /></ProtectedRoute>} />
+        <Route path="/team/:teamId/tasks" element={<ProtectedRoute><Tasks /></ProtectedRoute>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
     </div>
